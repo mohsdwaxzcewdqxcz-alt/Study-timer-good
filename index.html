@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>مؤقت المذاكرة ونظام الامتحانات</title>
+  <link rel="icon" type="image/png" href="Icon/timo.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f293d;
+      --input-bg: #0b0f19;
+      --text-color: #f3f4f6;
+      --subtext-color: #9ca3af;
+      --border-color: #1f293d;
+      --primary-color: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      --accent-color: #8b5cf6;
+      --success-color: #10b981;
+      --danger-color: #ef4444;
+      --warning-color: #f59e0b;
+      --gold-color: #fbbf24;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
+      --shadow-lg: 0 10px 30px rgba(0,0,0,0.5);
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #f3f4f6;
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+      --input-bg: #f9fafb;
+      --text-color: #111827;
+      --subtext-color: #6b7280;
+      --border-color: #e5e7eb;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Cairo', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      padding: 20px 15px;
+      direction: rtl;
+    }
+
+    #app-container, #auth-screen {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    h1, h2, h3, h4 {
+      font-weight: 800;
+      margin-bottom: 14px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--border-color);
+      position: relative;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      text-align: center;
+      color: var(--primary-color);
+      border-bottom: 3px solid var(--primary-color);
+      padding-bottom: 10px;
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: var(--text-color);
+      border-right: 4px solid var(--primary-color);
+      padding-right: 10px;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      color: var(--accent-color);
+      border-right: 3px solid var(--accent-color);
+      padding-right: 8px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(10px);
+    }
+
+    .hidden { display: none !important; }
+
+    .top-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .top-bar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .user-profile-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-color);
+    }
+
+    .streak-badge {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning-color);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .currency-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      width: 100%;
+    }
+
+    .currency-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+    }
+
+    .currency-icon { font-size: 1.8rem; }
+    .currency-info { display: flex; flex-direction: column; }
+    .currency-label { font-size: 0.8rem; color: var(--subtext-color); font-weight: 600; }
+    .currency-value { font-weight: 800; font-size: 1.15rem; color: var(--text-color); }
+
+    .stats-bar {
+      font-size: 0.9rem;
+      color: var(--subtext-color);
+      font-weight: 600;
+      padding: 8px 14px;
+      background: var(--bg-color);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      display: inline-block;
+    }
+
+    .nav-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      outline: none;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .small-btn {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .subject-btn, .primary-btn {
+      background: var(--primary-gradient);
+      color: #ffffff;
+    }
+
+    .secondary-btn {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .secondary-btn:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .success-btn {
+      background-color: var(--success-color);
+      color: #ffffff;
+    }
+
+    .cancel-btn {
+      background-color: var(--danger-color);
+      color: #ffffff;
+    }
+
+    .full-width-btn { width: 100%; }
+    .flex-1 { flex: 1; }
+
+    .form-group {
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-color);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px 16px;
+      background-color: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-color);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .input-field:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    .subjects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .subjects-grid .btn {
+      padding: 18px;
+      font-size: 1.1rem;
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .shop-item {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .shop-item-img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      margin-bottom: 12px;
+    }
+
+    .shop-item h3 { font-size: 1.1rem; margin-bottom: 6px; border: none; padding: 0; }
+    .shop-item-script { font-size: 0.85rem; color: var(--subtext-color); margin-bottom: 12px; line-height: 1.4; }
+    .shop-item-price { font-size: 1.2rem; font-weight: 800; color: var(--gold-color); }
+
+    .timer-display {
+      font-size: 4rem;
+      font-weight: 800;
+      text-align: center;
+      margin: 20px 0;
+      font-family: 'Plus Jakarta Sans', monospace;
+      color: var(--primary-color);
+      letter-spacing: 2px;
+    }
+
+    .pulse-border {
+      animation: pulseBorder 2s infinite;
+    }
+
+    @keyframes pulseBorder {
+      0% { border-color: var(--border-color); }
+      50% { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(99, 102, 241, 0.3); }
+      100% { border-color: var(--border-color); }
+    }
+
+    .exam-ready {
+      border-color: var(--success-color) !important;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+    }
+
+    .lounge-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .lounge-icon { font-size: 2.5rem; }
+
+    .instructions-guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .guide-card {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px;
+    }
+
+    .guide-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .guide-card-icon { font-size: 1.5rem; }
+    .guide-card-list { padding-right: 18px; color: var(--subtext-color); font-size: 0.9rem; line-height: 1.6; }
+
+    /* ====================================================
+       تعديل وتطوير نظام زر الشمس والقمر (Theme Switcher) 
+       ==================================================== */
+    .theme-switch {
+      position: relative;
+      display: inline-block;
+      width: 62px;
+      height: 32px;
+      user-select: none;
+    }
+
+    .theme-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #1a2236;
+      border: 2px solid var(--border-color);
+      border-radius: 34px;
+      transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    .slider .icon {
+      font-size: 0.9rem;
+      z-index: 1;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .slider .sun-icon {
+      opacity: 0.4;
+    }
+
+    .slider .moon-icon {
+      opacity: 1;
+    }
+
+    /* القرص المتحرك الداخلي للزر */
+    .slider::after {
+      content: "";
+      position: absolute;
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      border-radius: 50%;
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), background 0.4s ease, box-shadow 0.4s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      z-index: 2;
+    }
+
+    /* عندما يكون وضع الشمس مفعلاً (الفاتح) */
+    .theme-switch input:checked + .slider {
+      background-color: #bae6fd;
+      border-color: #38bdf8;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .theme-switch input:checked + .slider::after {
+      transform: translateX(30px);
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+    }
+
+    .theme-switch input:checked + .slider .sun-icon {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .theme-switch input:checked + .slider .moon-icon {
+      opacity: 0.4;
+      transform: scale(0.9);
+    }
+
+    /* History & Leaderboard */
+    .history-list { list-style: none; margin-top: 15px; }
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+    }
+
+    .history-item.failed { border-right: 4px solid var(--danger-color); }
+    .delete-item-btn { background: none; border: none; color: var(--danger-color); cursor: pointer; font-size: 1rem; }
+
+    .leaderboard-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--bg-color);
+      border-radius: var(--radius-sm);
+      margin-bottom: 6px;
+      border: 1px solid var(--border-color);
+    }
+
+    .user-admin-card {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-right: 5px solid var(--primary-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .user-admin-card.online {
+      border-right-color: var(--success-color);
+    }
+
+    .user-admin-card.banned {
+      border-right-color: var(--danger-color);
+      background: rgba(239, 68, 68, 0.05);
+    }
+
+    .user-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1px solid var(--border-color);
+    }
+
+    .user-status-badge.online { background: rgba(16, 185, 129, 0.15); color: var(--success-color); border-color: rgba(16, 185, 129, 0.3); }
+    .user-status-badge.offline { background: rgba(156, 163, 175, 0.15); color: var(--subtext-color); }
+    .user-status-badge.banned { background: rgba(239, 68, 68, 0.15); color: var(--danger-color); border-color: rgba(239, 68, 68, 0.3); }
+
+    #auth-screen {
+      max-width: 420px;
+      margin: 80px auto;
+    }
+
+    .auth-toggle-text {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--subtext-color);
+    }
+
+    .auth-toggle-text a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    p.instruction { color: var(--subtext-color); margin-bottom: 16px; font-size: 0.95rem; }
+    .responsive-flex { display: flex; gap: 10px; flex-wrap: wrap; }
+    .site-footer {
+      padding: 18px 12px 24px;
+      border-top: 1px solid var(--border-color);
+      color: var(--subtext-color);
+      text-align: center;
+      font-size: 0.85rem;
+      line-height: 1.8;
+    }
+    .site-footer p { margin: 0; }
+
+    @media (max-width: 640px) {
+      .top-bar-row { flex-direction: column; align-items: stretch; }
+      .nav-controls { justify-content: center; }
+      .timer-display { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- شاشة تسجيل الدخول والإنشاء -->
+  <div id="auth-screen" class="card">
+    <h2 id="auth-title" data-i18n="btn_login" style="text-align: center; margin-bottom: 20px;">تسجيل الدخول</h2>
+    <form onsubmit="handleAuth(event)">
+      <div class="form-group">
+        <label data-i18n="label_username">اسم المستخدم:</label>
+        <input type="text" id="username-input" class="input-field" autocomplete="username" required>
+      </div>
+      <div class="form-group">
+        <label data-i18n="label_password">كلمة المرور:</label>
+        <input type="password" id="password-input" class="input-field" autocomplete="current-password" required>
+      </div>
+      <button type="submit" id="auth-submit-btn" class="btn subject-btn full-width-btn" data-i18n="btn_login" style="margin-top:10px;">دخول</button>
+    </form>
+    <p class="auth-toggle-text">
+      <span id="auth-toggle-msg" data-i18n="msg_no_account">ليس لديك حساب؟</span>
+      <a href="#" id="auth-toggle-link" onclick="toggleAuthMode(event)" data-i18n="link_create_account">إنشاء حساب جديد</a>
+    </p>
+  </div>
+
+  <!-- الحاوية الرئيسية للتطبيق -->
+  <div id="app-container" class="hidden">
+    
+    <!-- الشريط العلوي -->
+    <header class="top-bar">
+      <div class="top-bar-row">
+        <div class="user-profile-header">
+          <span>👤</span> <span id="user-name-text">المستخدم</span>
+        </div>
+        <span class="streak-badge" title="سلسلة الأيام المتتالية (Streak)">🔥 <span id="streak-count-text">0</span> أيام</span>
+      </div>
+
+      <div class="currency-container">
+        <div class="currency-card stars-card">
+          <span class="currency-icon">⭐</span>
+          <div class="currency-info">
+            <span class="currency-label" data-i18n="currency_stars">نجوم المذاكرة</span>
+            <span class="currency-value" id="points-text">0 ⭐</span>
+          </div>
+        </div>
+
+        <div class="currency-card gems-card">
+          <span class="currency-icon">💎</span>
+          <div class="currency-info">
+            <span class="currency-label" data-i18n="currency_gems">نقاط الأدمن</span>
+            <span class="currency-value" id="admin-points-text">💎 0</span>
+          </div>
+        </div>
+
+        <div class="currency-card credits-card">
+          <span class="currency-icon">⚡</span>
+          <div class="currency-info">
+            <span class="currency-label" data-i18n="currency_credits">فرص الإيقاف</span>
+            <span class="currency-value" id="pause-credits-text">2</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="top-bar-row" style="margin-top: 4px;">
+        <div class="stats-bar">
+          ⏱️ <span id="game-time-text">0 د للعب</span> | 
+          🎬 <span id="watch-time-text">0 د للمشاهدة</span>
+          <div id="double-stars-badge" class="hidden" style="color: var(--gold-color); font-size: 0.85rem; margin-top: 4px; font-weight: bold;">⚡ مضاعف النجوم مفعل (2x)!</div>
+        </div>
+
+        <div class="nav-controls">
+          <button class="btn success-btn hidden" id="special-game-btn" onclick="openSpecialGame()" style="background-color:#8b5cf6;">اللعبة المفتوحة 🎮 (<span id="special-game-timer">30:00</span>)</button>
+          <button class="btn secondary-btn" id="admin-panel-btn" onclick="openAdminPanel()" style="background-color:#d69e2e; color:white; display:none;">لوحة الأدمن 👑</button>
+          <button class="btn secondary-btn" onclick="openLeaderboard()" data-i18n="nav_leaderboard">لوحة الصدارة 🏆</button>
+          <button class="btn secondary-btn" onclick="openInstructions()" data-i18n="nav_instructions">التعليمات ℹ️</button>
+          <button class="btn secondary-btn" onclick="openStore()" data-i18n="nav_store">المتجر 🛒</button>
+          
+          <!-- مفتاح التبديل المطور لنظام الشمس والقمر -->
+          <label class="theme-switch" title="تبديل وضع النهار/الليل">
+            <input type="checkbox" id="theme-toggle-checkbox" onchange="toggleTheme()">
+            <span class="slider">
+              <span class="icon moon-icon">🌙</span>
+              <span class="icon sun-icon">☀️</span>
+            </span>
+          </label>
+
+          <button class="btn secondary-btn" id="lang-btn-text" onclick="toggleLanguage()">EN</button>
+          <button class="btn cancel-btn" onclick="logout()" data-i18n="nav_logout">خروج</button>
+          <button class="btn cancel-btn" style="background-color: #9b2c2c;" onclick="deleteAccount()" title="مسح الحساب نهائياً">حذف الحساب 🗑️</button>
+        </div>
+      </div>
+    </header>
+
+    <h1 id="main-app-title" data-i18n="main_title">مؤقت المذاكرة والواجب الورقي</h1>
+
+    <!-- باقي العناصر واجهات الصفحة دون تغيير -->
+    <div id="exam-waiting-lounge" class="card exam-lounge-card pulse-border">
+      <div class="lounge-header">
+        <span class="lounge-icon" id="lounge-status-icon">⏳</span>
+        <div>
+          <h3 id="lounge-title" data-i18n="waiting_exam_title">صالة انتظار الامتحان</h3>
+          <p id="lounge-subtitle" data-i18n="waiting_exam_desc">في انتظار تحديد الامتحان ونشره بواسطة الأدمن...</p>
+        </div>
+      </div>
+
+      <div id="admin-exam-banner" class="hidden" style="margin-top: 15px;">
+        <p id="exam-banner-info" style="margin-bottom: 10px;"></p>
+        <button class="btn success-btn full-width-btn" style="font-size: 1.1rem;" onclick="startAdminExam()" data-i18n="btn_start_exam_now">بدء الامتحان الآن 🚀</button>
+      </div>
+    </div>
+
+    <div id="special-game-screen" class="view-screen card hidden">
+      <h2>🎮 لعبة صائد النجوم والماس</h2>
+      <p class="instruction">حرك السلة يميناً ويساراً لجمع النجوم وتفادي القنابل! الوقت المتبقي: <strong id="mini-game-time-left" style="color:var(--warning-color);">30:00</strong></p>
+
+      <div style="text-align:center; margin-bottom:10px;">
+        <span>النقاط: <strong id="game-score-display" style="color:var(--primary-color);">0</strong></span>
+      </div>
+
+      <div id="game-canvas-container" style="display: flex; justify-content: center;">
+        <canvas id="miniGameCanvas" width="340" height="380" style="background: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius-md);"></canvas>
+      </div>
+
+      <div class="actions" style="margin-top:15px;">
+        <button class="btn secondary-btn full-width-btn" onclick="closeSpecialGame()">العودة للتطبيق</button>
+      </div>
+    </div>
+
+    <div id="subject-selection" class="view-screen card">
+      <h2 data-i18n="select_subject">اختر المادة للبدء</h2>
+      <div class="subjects-grid" id="subjects-grid"></div>
+
+      <div class="break-section" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+        <h3 data-i18n="break_section_title">وقتا الاستراحة والمكافآت</h3>
+        <div class="responsive-flex" style="margin-top: 15px;">
+          <div class="flex-1" style="background: var(--bg-color); padding: 15px; border-radius: var(--radius-md); border: 1px solid var(--border-color); text-align: center;">
+            <button class="btn success-btn full-width-btn" onclick="useRewardTime('gaming')" data-i18n="btn_start_game">بدء وقت اللعب 🎮</button>
+            <small id="sub-game-time" style="display: block; margin-top: 8px; color: var(--subtext-color);">المتاح: 0 دقيقة</small>
+          </div>
+          <div class="flex-1" style="background: var(--bg-color); padding: 15px; border-radius: var(--radius-md); border: 1px solid var(--border-color); text-align: center;">
+            <button class="btn success-btn full-width-btn" style="background-color:#e53e3e;" onclick="useRewardTime('watch')" data-i18n="btn_start_watch">بدء وقت المشاهدة 🎬</button>
+            <small id="sub-watch-time" style="display: block; margin-top: 8px; color: var(--subtext-color);">المتاح: 0 دقيقة</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="leaderboard-screen" class="view-screen card hidden">
+      <h2>لوحة الصدارة 🏆</h2>
+      <p class="instruction">تنافس مع زملائك على القمة!</p>
+
+      <div class="leaderboards-container">
+        <div style="background: var(--bg-color); padding: 16px; border-radius: var(--radius-md); margin-bottom: 15px; border: 1px solid var(--border-color);">
+          <h3 style="color:var(--primary-color);">⏱️ الأكثر في وقت المذاكرة</h3>
+          <div id="leaderboard-time-list" style="margin-top:10px;"></div>
+        </div>
+
+        <div style="background: var(--bg-color); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+          <h3 style="color:var(--warning-color);">⭐ الأكثر في نقاط الاستخدام (النجوم)</h3>
+          <div id="leaderboard-points-list" style="margin-top:10px;"></div>
+        </div>
+      </div>
+
+      <div class="actions" style="margin-top:15px;">
+        <button class="btn secondary-btn full-width-btn" onclick="closeLeaderboard()" data-i18n="btn_back_home">العودة للرئيسية</button>
+      </div>
+    </div>
+
+    <div id="exam-take-screen" class="view-screen card hidden">
+      <h2 id="exam-take-title">امتحان الأدمن</h2>
+      <div class="timer-display" id="exam-timer-display">00:00</div>
+      <div id="exam-questions-container"></div>
+      <div class="actions">
+        <button class="btn success-btn full-width-btn" onclick="submitExamAnswers()" data-i18n="btn_submit_exam">إرسال الحل للإدمن 📤</button>
+      </div>
+    </div>
+
+    <div id="admin-panel-screen" class="view-screen card hidden">
+      <h2 data-i18n="admin_panel_title">👑 لوحة تحكم الأدمن</h2>
+
+      <div style="background: var(--bg-color); padding: 18px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 20px;">
+        <h3 data-i18n="admin_change_pass_title">🔐 تغيير كلمة مرور الأدمن</h3>
+        <div class="form-group" style="margin-top: 10px;">
+          <label data-i18n="label_new_admin_pass">كلمة المرور الجديدة للأدمن:</label>
+          <input type="password" id="new-admin-pass-input" class="input-field" placeholder="...">
+        </div>
+        <button class="btn success-btn full-width-btn" onclick="changeAdminPassword()" data-i18n="btn_save_admin_pass">حفظ كلمة المرور الجديدة 💾</button>
+      </div>
+      
+      <div style="background: var(--bg-color); padding: 18px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 20px;">
+        <h3 data-i18n="admin_create_exam">➕ إنشاء امتحان جديد</h3>
+        <div class="form-group" style="margin-top: 10px;">
+          <label data-i18n="label_subject">المادة:</label>
+          <select id="exam-subject" class="input-field">
+            <option value="arabic">اللغة العربية</option>
+            <option value="english">اللغة الإنجليزية</option>
+            <option value="programming">البرمجة</option>
+            <option value="history">التاريخ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-i18n="label_repeat_type">نوع التكرار:</label>
+          <select id="exam-type" class="input-field">
+            <option value="أسبوعي">أسبوعي</option>
+            <option value="شهري">شهري</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-i18n="label_duration">مدة الامتحان (بالدقائق):</label>
+          <input type="number" id="exam-duration" class="input-field" value="30" inputmode="numeric">
+        </div>
+        <div class="form-group">
+          <label data-i18n="label_q_count">عدد الأسئلة المطلوب الإجابة عليها:</label>
+          <input type="number" id="exam-question-count" class="input-field" value="3" inputmode="numeric" onchange="generateExamInputFields()">
+        </div>
+        <div id="exam-questions-inputs"></div>
+        <button class="btn success-btn full-width-btn" onclick="saveAdminExam()" data-i18n="btn_publish_exam">نشر الامتحان 🚀</button>
+      </div>
+
+      <div style="background: var(--bg-color); padding: 18px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 20px;">
+        <h3 data-i18n="admin_users_list_title">👥 قائمة المستخدمين وحالة التواجد والإدارة</h3>
+        <div id="admin-users-list" style="margin-top:10px;"></div>
+      </div>
+
+      <div style="background: var(--bg-color); padding: 18px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 20px;">
+        <h3 data-i18n="admin_songs_title">🎶 الأغاني والأفكار المقترحة في الموقع</h3>
+        <div id="accepted-songs-list" style="margin-top:10px;"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn secondary-btn full-width-btn" onclick="showScreen('subject-selection')" data-i18n="btn_back">العودة للرئيسية</button>
+      </div>
+    </div>
+
+    <div id="session-type-screen" class="view-screen card hidden">
+      <h2 id="selected-subject-title">المادة المختارة</h2>
+      <p class="instruction" data-i18n="select_session_instruction">اختر نوع الجلسة للبدء:</p>
+      <div class="form-group responsive-flex" style="flex-direction: column;">
+        <button class="btn subject-btn" onclick="startHomeworkSession()" data-i18n="btn_homework">واجب ورقي (120 دقيقة - 100 نقطة)</button>
+        <button class="btn subject-btn" onclick="showCustomSetup('مذاكرة')" data-i18n="btn_study">مذاكرة درس</button>
+        <button class="btn subject-btn" onclick="showCustomSetup('تلخيص')" data-i18n="btn_summary">تلخيص مادة</button>
+        <button class="btn secondary-btn" onclick="showScreen('subject-selection')" data-i18n="btn_back">العودة للقائمة الرئيسية</button>
+      </div>
+    </div>
+
+    <div id="custom-setup-screen" class="view-screen card hidden">
+      <h2 id="custom-setup-title">إعداد الجلسة</h2>
+      <div class="form-group">
+        <label id="custom-topic-label" data-i18n="study_topic_label">عنوان الموضوع/الدرس:</label>
+        <input type="text" id="custom-topic" class="input-field" placeholder="مثال: الفصل الأول / الدرس الثاني...">
+      </div>
+      <div class="form-group">
+        <label data-i18n="label_time">حدد مدة الجلسة بالدقائق (1 - 120 دقيقة):</label>
+        <input type="number" id="custom-time" class="input-field" value="60" min="1" max="120" inputmode="numeric">
+      </div>
+      <div class="actions responsive-flex">
+        <button class="btn success-btn flex-1" onclick="confirmCustomStart()" data-i18n="btn_start">ابدأ الجلسة ⏱️</button>
+        <button class="btn cancel-btn flex-1" onclick="showScreen('session-type-screen')" data-i18n="btn_cancel">إلغاء</button>
+      </div>
+    </div>
+
+    <div id="timer-screen" class="view-screen card hidden">
+      <h2 id="current-subject-title">المادة والجلسة</h2>
+      <div id="timer-topic-detail" style="text-align: center; color: var(--subtext-color); font-weight: bold; margin-top: 5px;"></div>
+      <div class="timer-display" id="timer-display">00:00</div>
+      <p class="instruction" style="text-align: center;" data-i18n="timer_instruction">قم بالعمل في الكشكول الآن!</p>
+      <div class="actions responsive-flex">
+        <button class="btn success-btn flex-1" onclick="finishTask()" data-i18n="btn_finish">انتهاء (أنهيت العمل)</button>
+        <button class="btn secondary-btn flex-1" id="pause-btn" onclick="togglePauseTimer()" data-i18n="pause_btn_text">إيقاف مؤقت</button>
+        <button class="btn cancel-btn flex-1" onclick="cancelTask()" data-i18n="btn_abort">إلغاء الجلسة</button>
+      </div>
+    </div>
+
+    <div id="result-screen" class="view-screen card hidden">
+      <h2 id="result-title">النتيجة</h2>
+      <div id="result-message" style="margin: 20px 0; font-size: 1.1rem; line-height: 1.6; text-align: center;"></div>
+      <div class="actions">
+        <button class="btn subject-btn full-width-btn" onclick="showScreen('subject-selection')" data-i18n="btn_home">الرئيسية</button>
+      </div>
+    </div>
+
+    <div id="shop-screen" class="view-screen card hidden">
+      <h2 data-i18n="shop_title">المتجر 🛒</h2>
+      <p class="instruction" data-i18n="shop_subtitle">استبدل نجوم المذاكرة ونقاط الأدمن بمكافآت ومتعة!</p>
+      
+      <div style="margin-bottom: 15px;">
+        <button class="btn success-btn full-width-btn" onclick="showScreen('add-item-screen')" data-i18n="btn_create_product">➕ إنشاء منتج جديد (200⭐)</button>
+      </div>
+
+      <div class="shop-grid" id="shop-grid"></div>
+
+      <div class="actions" style="margin-top: 20px;">
+        <button class="btn secondary-btn full-width-btn" onclick="closeStore()" data-i18n="btn_back_home">العودة للرئيسية</button>
+      </div>
+    </div>
+
+    <div id="add-item-screen" class="view-screen card hidden">
+      <h2 data-i18n="add_item_title">إنشاء منتج جديد للمتجر</h2>
+      <p class="instruction" style="color:var(--warning-color);" data-i18n="add_item_cost">⭐ تكلفة نشر منتج جديد: 200 نجمة</p>
+      
+      <div class="form-group">
+        <label data-i18n="label_img_url">رابط الصورة (URL):</label>
+        <input type="url" id="item-img-url" class="input-field" placeholder="https://example.com/image.jpg">
+      </div>
+      <div class="form-group">
+        <label data-i18n="label_item_title">اسم المنتج:</label>
+        <input type="text" id="item-title" class="input-field">
+      </div>
+      <div class="form-group">
+        <label data-i18n="label_item_desc">الوصف:</label>
+        <input type="text" id="item-script" class="input-field">
+      </div>
+      <div class="form-group">
+        <label data-i18n="label_item_price">السعر بالنجوم (للمشترين):</label>
+        <input type="number" id="item-price" class="input-field" value="50" inputmode="numeric">
+      </div>
+      <div class="actions responsive-flex">
+        <button class="btn success-btn flex-1" onclick="saveNewShopItem()" data-i18n="btn_publish_item">خصم 200⭐ ونشر المنتج</button>
+        <button class="btn cancel-btn flex-1" onclick="openStore()" data-i18n="btn_cancel">إلغاء</button>
+      </div>
+    </div>
+
+    <div id="instructions-screen" class="view-screen card hidden">
+      <h2 data-i18n="inst_title">📖 دليل استخدام التطبيق</h2>
+      <p class="instruction" data-i18n="inst_welcome_subtitle">أهلاً بك! دليل مبسط لشرح كيفية الاستفادة الكاملة من مميزات الموقع:</p>
+
+      <div class="instructions-guide-grid">
+        <div class="guide-card">
+          <div class="guide-card-header">
+            <span class="guide-card-icon">⏱️</span>
+            <h3 data-i18n="inst_sec1_title">1️⃣ نظام المذاكرة والمؤقت</h3>
+          </div>
+          <ul class="guide-card-list">
+            <li data-i18n="inst_sec1_p1">اختر المادة ثم حدد نوع الجلسة (واجب، مذاكرة، أو تلخيص).</li>
+            <li data-i18n="inst_sec1_p2">عند إتمام الجلسة في الوقت المحدد، ستحصل تلقائياً على ⭐ نجوم المكافأة في حسابك.</li>
+            <li data-i18n="inst_sec1_p3">يمكنك استخدام فرص الإيقاف المؤقت (⚡) عند الحاجة لأخذ استراحة سريعة أثناء المذاكرة.</li>
+          </ul>
+        </div>
+
+        <div class="guide-card">
+          <div class="guide-card-header">
+            <span class="guide-card-icon">💎</span>
+            <h3 data-i18n="inst_sec2_title">2️⃣ امتحانات الأدمن والنقاط النادرة</h3>
+          </div>
+          <ul class="guide-card-list">
+            <li data-i18n="inst_sec2_p1">ينشر الأدمن امتحانات دورية، أجب عنها بدقة واحصل على العلامة الكاملة لتحصل على نقطة أدمن نادرة (💎).</li>
+            <li data-i18n="inst_sec2_p2">تمنحك نقاط الأدمن إمكانية الحصول على خصومات كبيرة وقوية على المنتجات في المتجر!</li>
+          </ul>
+        </div>
+
+        <div class="guide-card">
+          <div class="guide-card-header">
+            <span class="guide-card-icon">🎶</span>
+            <h3 data-i18n="inst_sec3_title">3️⃣ الأغاني والأفكار بالموقع</h3>
+          </div>
+          <ul class="guide-card-list">
+            <li data-i18n="inst_sec3_p1">اشتري عنصر "أغاني وأفكار" (140⭐) من المتجر واكتب فكرتك أو أغنيتك المفضلة لإرسالها للأدمن.</li>
+            <li data-i18n="inst_sec3_p2">عند موافقة الأدمن، سيتم نشر فكرتك رسمياً داخل الموقع ليراها الجميع!</li>
+          </ul>
+        </div>
+
+        <div class="guide-card">
+          <div class="guide-card-header">
+            <span class="guide-card-icon">🛒</span>
+            <h3 data-i18n="inst_sec4_title">4️⃣ المتجر والمكافآت الترفيهية</h3>
+          </div>
+          <ul class="guide-card-list">
+            <li data-i18n="inst_sec4_p1">استبدل نجومك بـ وقتاً للعب (🎮) أو المشاهدة (🎬) وفعّلها مباشرة من الصفحة الرئيسية!</li>
+            <li data-i18n="inst_sec4_p2">يمكنك أيضاً شراء قوة "مضاعف النجوم 2x" أو "تجميد الستريك 🔥" للحفاظ على استمرارك.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="actions" style="margin-top: 20px;">
+        <button class="btn subject-btn full-width-btn" onclick="closeInstructions()" data-i18n="btn_understand">فهمت ذلك، العودة للرئيسية 🚀</button>
+      </div>
+    </div>
+
+    <div class="card history-card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 data-i18n="history_title">سجل الإنجازات</h3>
+        <button class="btn cancel-btn" style="padding: 6px 12px; font-size: 0.85rem;" onclick="clearAllHistory()" data-i18n="btn_clear_all">مسح الكل</button>
+      </div>
+      <ul id="history-list" class="history-list"></ul>
+    </div>
+
+    <footer class="site-footer">
+      <p>جميع الحقوق محفوظة © 2026</p>
+      <p>تطوير محمد أشرف أحمد | مدعوم بالذكاء الاصطناعي</p>
+    </footer>
+
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAOgZu-pYFzJkZYbd_gAY7HrZNqiF6YPiQ",
+      authDomain: "study-timer-schoole.firebaseapp.com",
+      databaseURL: "https://study-timer-schoole-default-rtdb.firebaseio.com",
+      projectId: "study-timer-schoole",
+      storageBucket: "study-timer-schoole.firebasestorage.app",
+      messagingSenderId: "1066304614386",
+      appId: "1:1066304614386:web:b2781af630dd308e7e456b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
