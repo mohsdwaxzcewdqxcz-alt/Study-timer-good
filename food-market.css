@@ -1,0 +1,221 @@
+.food-market-heading,
+.food-market-actions,
+.food-shop-tabs,
+.food-wallet-controls,
+.food-wallet-stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.food-market-heading {
+  justify-content: space-between;
+}
+
+.food-market-heading h2 {
+  margin-bottom: 8px;
+}
+
+.food-market-heading .instruction {
+  text-align: start;
+  margin-bottom: 10px;
+}
+
+.food-wallet {
+  margin: 12px 0 18px;
+  padding: 18px;
+}
+
+.food-wallet-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  margin: 12px 0;
+}
+
+.food-wallet-stats > div {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+}
+
+.food-wallet-stats span,
+.food-wallet-stats strong {
+  display: block;
+}
+
+.food-wallet-stats span,
+.food-wallet-hint {
+  color: var(--subtext-color);
+  font-size: 0.85rem;
+}
+
+.food-wallet-stats strong {
+  margin-top: 4px;
+  font-size: 1.1rem;
+}
+
+.food-wallet-controls {
+  align-items: flex-end;
+}
+
+.food-wallet-controls .form-group {
+  flex: 1 1 180px;
+  margin-bottom: 0;
+}
+
+.food-wallet-hint {
+  margin-top: 12px;
+}
+
+.food-spend-details {
+  margin-top: 12px;
+  color: var(--subtext-color);
+}
+
+.food-spend-details summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.food-spend-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid var(--border-color);
+  padding: 8px 2px;
+  font-size: 0.88rem;
+}
+
+.food-lock-notice {
+  border: 1px solid var(--danger-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--danger-color);
+  margin: 10px 0;
+}
+
+.food-market-actions {
+  justify-content: space-between;
+  margin: 12px 0;
+}
+
+.food-shop-tabs {
+  margin-bottom: 12px;
+}
+
+.food-shop-tab.active {
+  background: var(--primary-gradient);
+  color: #fff;
+}
+
+.food-product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+  gap: 12px;
+}
+
+.food-product-card {
+  min-width: 0;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.food-product-card h3 {
+  margin: 0;
+}
+
+.food-product-image {
+  width: 100%;
+  height: 155px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.food-image-preview {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-color);
+}
+
+.food-image-preview img {
+  display: block;
+  width: 100%;
+  max-height: 240px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.food-image-preview p {
+  margin-top: 6px;
+  color: var(--subtext-color);
+  font-size: 0.88rem;
+}
+
+.food-image-preview .food-image-error {
+  color: var(--danger-color);
+  font-weight: 700;
+}
+
+.food-product-meta,
+.food-product-description {
+  color: var(--subtext-color);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.food-product-price {
+  color: var(--warning-color);
+  font-weight: 800;
+}
+
+.food-rating-row,
+.food-buy-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.food-rating-row select,
+.food-buy-row input {
+  min-width: 0;
+}
+
+.food-buy-row input {
+  width: 75px;
+}
+
+.food-admin-product,
+.food-admin-report {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin: 10px 0;
+  overflow-wrap: anywhere;
+}
+
+.food-admin-product p,
+.food-admin-report p {
+  color: var(--subtext-color);
+  margin: 4px 0;
+}
+
+@media (max-width: 520px) {
+  .food-market-heading {
+    align-items: flex-start;
+  }
+
+  .food-market-actions > .btn,
+  .food-wallet-controls > .btn {
+    width: 100%;
+  }
+}
